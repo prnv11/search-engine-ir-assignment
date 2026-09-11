@@ -1,0 +1,288 @@
+==============================================================================
+PART E - TEST REPORT
+==============================================================================
+
+
+### 1. FREE-TEXT QUERIES (VSM, lnc.ltc cosine) ###
+
+Query: 'cotton shirt'
+  D001  score=0.2892  [T-Shirt]  Men's Cotton Crew Neck T-Shirt - Black
+  D041  score=0.2892  [T-Shirt]  Men's Cotton Crew Neck T-Shirt - Maroon
+  D061  score=0.2892  [T-Shirt]  Men's Cotton Crew Neck T-Shirt - White
+  D022  score=0.2865  [Shirt]  Men's Checked Cotton Shirt - White
+  D082  score=0.2865  [Shirt]  Men's Checked Cotton Shirt - Blue
+  D081  score=0.2862  [T-Shirt]  Men's Cotton Crew Neck T-Shirt - Mustard
+  D042  score=0.2846  [Shirt]  Men's Checked Cotton Shirt - Maroon
+  D002  score=0.2816  [Shirt]  Men's Checked Cotton Shirt - Black
+  D062  score=0.2816  [Shirt]  Men's Checked Cotton Shirt - Olive
+  D021  score=0.2800  [T-Shirt]  Men's Cotton Crew Neck T-Shirt - Sky Blue
+
+Query: 'festive kurta'
+  D004  score=0.2386  [Kurta]  Men's Regular Fit Kurta - Pink
+  D064  score=0.2386  [Kurta]  Men's Regular Fit Kurta - White
+  D024  score=0.2365  [Kurta]  Men's Regular Fit Kurta - Teal
+  D084  score=0.2365  [Kurta]  Men's Regular Fit Kurta - Beige
+  D034  score=0.2360  [Kurta]  Women's Printed Straight Kurta - Maroon
+  D094  score=0.2360  [Kurta]  Women's Printed Straight Kurta - Teal
+  D054  score=0.2339  [Kurta]  Women's Printed Straight Kurta - Mustard
+  D014  score=0.2322  [Kurta]  Women's Printed Straight Kurta - Beige
+  D074  score=0.2322  [Kurta]  Women's Printed Straight Kurta - Pink
+  D044  score=0.2294  [Kurta]  Men's Regular Fit Kurta - Navy Blue
+
+Query: 'winter jacket'
+  D058  score=0.3264  [Jacket]  Women's Quilted Winter Jacket - Black
+  D018  score=0.3241  [Jacket]  Women's Quilted Winter Jacket - Beige
+  D078  score=0.3241  [Jacket]  Women's Quilted Winter Jacket - Beige
+  D038  score=0.3205  [Jacket]  Women's Quilted Winter Jacket - Olive
+  D098  score=0.3205  [Jacket]  Women's Quilted Winter Jacket - Olive
+  D028  score=0.2818  [Jacket]  Women's Casual Puffer Jacket - Black
+  D088  score=0.2818  [Jacket]  Women's Casual Puffer Jacket - Black
+  D048  score=0.2799  [Jacket]  Women's Casual Puffer Jacket - Beige
+  D008  score=0.2769  [Jacket]  Women's Casual Puffer Jacket - Olive
+  D068  score=0.2769  [Jacket]  Women's Casual Puffer Jacket - Olive
+
+Query: 'stretch denim jeans'
+  D013  score=0.3420  [Jeans]  Men's Slim Fit Stretch Jeans - Grey
+  D073  score=0.3420  [Jeans]  Men's Slim Fit Stretch Jeans - Grey
+  D043  score=0.3411  [Jeans]  Men's Regular Fit Denim Jeans - Grey
+  D033  score=0.3362  [Jeans]  Men's Slim Fit Stretch Jeans - Grey
+  D093  score=0.3362  [Jeans]  Men's Slim Fit Stretch Jeans - Grey
+  D003  score=0.3352  [Jeans]  Men's Regular Fit Denim Jeans - Grey
+  D063  score=0.3352  [Jeans]  Men's Regular Fit Denim Jeans - Grey
+  D053  score=0.3281  [Jeans]  Men's Slim Fit Stretch Jeans - Grey
+  D023  score=0.2612  [Jeans]  Men's Regular Fit Denim Jeans - Grey
+  D083  score=0.2612  [Jeans]  Men's Regular Fit Denim Jeans - Grey
+
+Query: 'breathable fabric t-shirt'
+  D011  score=0.3013  [T-Shirt]  Men's Oversized Graphic T-Shirt - Mustard
+  D071  score=0.3013  [T-Shirt]  Men's Oversized Graphic T-Shirt - Black
+  D001  score=0.2975  [T-Shirt]  Men's Cotton Crew Neck T-Shirt - Black
+  D041  score=0.2975  [T-Shirt]  Men's Cotton Crew Neck T-Shirt - Maroon
+  D061  score=0.2975  [T-Shirt]  Men's Cotton Crew Neck T-Shirt - White
+  D031  score=0.2944  [T-Shirt]  Men's Oversized Graphic T-Shirt - Olive Green
+  D081  score=0.2944  [T-Shirt]  Men's Cotton Crew Neck T-Shirt - Mustard
+  D091  score=0.2944  [T-Shirt]  Men's Oversized Graphic T-Shirt - Sky Blue
+  D051  score=0.2914  [T-Shirt]  Men's Oversized Graphic T-Shirt - Navy Blue
+  D021  score=0.2880  [T-Shirt]  Men's Cotton Crew Neck T-Shirt - Sky Blue
+
+Query: 'high waist leggings'
+  D029  score=0.3834  [Leggings]  Women's High Waist Stretch Leggings - Grey
+  D049  score=0.3834  [Leggings]  Women's High Waist Stretch Leggings - Black
+  D089  score=0.3834  [Leggings]  Women's High Waist Stretch Leggings - Grey
+  D009  score=0.3711  [Leggings]  Women's High Waist Stretch Leggings - Olive Green
+  D069  score=0.3711  [Leggings]  Women's High Waist Stretch Leggings - Olive Green
+  D019  score=0.3037  [Leggings]  Women's Printed Active Leggings - Black
+  D059  score=0.3037  [Leggings]  Women's Printed Active Leggings - Grey
+  D079  score=0.3037  [Leggings]  Women's Printed Active Leggings - Black
+  D039  score=0.2939  [Leggings]  Women's Printed Active Leggings - Olive Green
+  D099  score=0.2939  [Leggings]  Women's Printed Active Leggings - Olive Green
+
+Query: 'regular fit sweatshirt'
+  D040  score=0.2867  [Sweatshirt]  Men's Regular Fit Sweatshirt - Black
+  D100  score=0.2867  [Sweatshirt]  Men's Regular Fit Sweatshirt - Black
+  D060  score=0.2848  [Sweatshirt]  Men's Regular Fit Sweatshirt - Maroon
+  D020  score=0.2764  [Sweatshirt]  Men's Regular Fit Sweatshirt - Navy Blue
+  D080  score=0.2764  [Sweatshirt]  Men's Regular Fit Sweatshirt - Navy Blue
+  D010  score=0.2267  [Sweatshirt]  Women's Fleece Sweatshirt - Black
+  D070  score=0.2267  [Sweatshirt]  Women's Fleece Sweatshirt - Black
+  D030  score=0.2251  [Sweatshirt]  Women's Fleece Sweatshirt - Maroon
+  D090  score=0.2251  [Sweatshirt]  Women's Fleece Sweatshirt - Maroon
+  D050  score=0.2183  [Sweatshirt]  Women's Fleece Sweatshirt - Navy Blue
+
+Query: 'printed saree'
+  D005  score=0.3185  [Saree]  Women's Printed Daily Wear Saree - Blue
+  D025  score=0.3185  [Saree]  Women's Printed Daily Wear Saree - Maroon
+  D065  score=0.3185  [Saree]  Women's Printed Daily Wear Saree - Green
+  D085  score=0.3185  [Saree]  Women's Printed Daily Wear Saree - Red
+  D045  score=0.3151  [Saree]  Women's Printed Daily Wear Saree - Purple
+  D035  score=0.2793  [Saree]  Women's Cotton Handloom Saree - Yellow
+  D055  score=0.2793  [Saree]  Women's Cotton Handloom Saree - Pink
+  D095  score=0.2793  [Saree]  Women's Cotton Handloom Saree - Maroon
+  D015  score=0.2763  [Saree]  Women's Cotton Handloom Saree - Red
+  D075  score=0.2763  [Saree]  Women's Cotton Handloom Saree - Blue
+
+Query: 'slim fit hoodie'
+  D037  score=0.1786  [Hoodie]  Unisex Fleece Pullover Hoodie - Black
+  D097  score=0.1786  [Hoodie]  Unisex Fleece Pullover Hoodie - Black
+  D057  score=0.1767  [Hoodie]  Unisex Fleece Pullover Hoodie - Wine
+  D007  score=0.1757  [Hoodie]  Women's Oversized Fleece Hoodie - Black
+  D067  score=0.1757  [Hoodie]  Women's Oversized Fleece Hoodie - Black
+  D017  score=0.1744  [Hoodie]  Unisex Fleece Pullover Hoodie - Navy Blue
+  D077  score=0.1744  [Hoodie]  Unisex Fleece Pullover Hoodie - Navy Blue
+  D027  score=0.1738  [Hoodie]  Women's Oversized Fleece Hoodie - Wine
+  D087  score=0.1738  [Hoodie]  Women's Oversized Fleece Hoodie - Wine
+  D047  score=0.1717  [Hoodie]  Women's Oversized Fleece Hoodie - Navy Blue
+
+Query: 'zip closure jacket'
+  D058  score=0.1398  [Jacket]  Women's Quilted Winter Jacket - Black
+  D018  score=0.1388  [Jacket]  Women's Quilted Winter Jacket - Beige
+  D078  score=0.1388  [Jacket]  Women's Quilted Winter Jacket - Beige
+  D028  score=0.1382  [Jacket]  Women's Casual Puffer Jacket - Black
+  D088  score=0.1382  [Jacket]  Women's Casual Puffer Jacket - Black
+  D038  score=0.1373  [Jacket]  Women's Quilted Winter Jacket - Olive
+  D048  score=0.1373  [Jacket]  Women's Casual Puffer Jacket - Beige
+  D098  score=0.1373  [Jacket]  Women's Quilted Winter Jacket - Olive
+  D008  score=0.1358  [Jacket]  Women's Casual Puffer Jacket - Olive
+  D068  score=0.1358  [Jacket]  Women's Casual Puffer Jacket - Olive
+
+Query: 'xylophone spaceship'
+  [out-of-vocabulary terms ignored: ['xylophon', 'spaceship']]
+  No results.
+
+
+### 2. EXACT PHRASE QUERIES (positional index) ###
+
+Phrase: 'cotton shirt'
+  D001  [T-Shirt]  Men's Cotton Crew Neck T-Shirt - Black  positions=[15, 16]
+  D002  [Shirt]  Men's Checked Cotton Shirt - Black  positions=[2, 3]
+  D021  [T-Shirt]  Men's Cotton Crew Neck T-Shirt - Sky Blue  positions=[17, 18]
+  D022  [Shirt]  Men's Checked Cotton Shirt - White  positions=[2, 3]
+  D041  [T-Shirt]  Men's Cotton Crew Neck T-Shirt - Maroon  positions=[15, 16]
+  D042  [Shirt]  Men's Checked Cotton Shirt - Maroon  positions=[2, 3]
+  D061  [T-Shirt]  Men's Cotton Crew Neck T-Shirt - White  positions=[15, 16]
+  D062  [Shirt]  Men's Checked Cotton Shirt - Olive  positions=[2, 3]
+  D081  [T-Shirt]  Men's Cotton Crew Neck T-Shirt - Mustard  positions=[15, 16]
+  D082  [Shirt]  Men's Checked Cotton Shirt - Blue  positions=[2, 3]
+
+Phrase: 'stretch denim'
+  D003  [Jeans]  Men's Regular Fit Denim Jeans - Grey  positions=[15, 16]
+  D013  [Jeans]  Men's Slim Fit Stretch Jeans - Grey  positions=[14, 15]
+  D033  [Jeans]  Men's Slim Fit Stretch Jeans - Grey  positions=[15, 16]
+  D043  [Jeans]  Men's Regular Fit Denim Jeans - Grey  positions=[14, 15]
+  D063  [Jeans]  Men's Regular Fit Denim Jeans - Grey  positions=[15, 16]
+  D073  [Jeans]  Men's Slim Fit Stretch Jeans - Grey  positions=[14, 15]
+  D093  [Jeans]  Men's Slim Fit Stretch Jeans - Grey  positions=[15, 16]
+
+Phrase: 'festive wear'
+  D005  [Saree]  Women's Printed Daily Wear Saree - Blue  positions=[21, 22]
+  D015  [Saree]  Women's Cotton Handloom Saree - Red  positions=[19, 20]
+  D025  [Saree]  Women's Printed Daily Wear Saree - Maroon  positions=[21, 22]
+  D035  [Saree]  Women's Cotton Handloom Saree - Yellow  positions=[19, 20]
+  D045  [Saree]  Women's Printed Daily Wear Saree - Purple  positions=[21, 22]
+  D055  [Saree]  Women's Cotton Handloom Saree - Pink  positions=[19, 20]
+  D065  [Saree]  Women's Printed Daily Wear Saree - Green  positions=[21, 22]
+  D075  [Saree]  Women's Cotton Handloom Saree - Blue  positions=[19, 20]
+  D085  [Saree]  Women's Printed Daily Wear Saree - Red  positions=[21, 22]
+  D095  [Saree]  Women's Cotton Handloom Saree - Maroon  positions=[19, 20]
+
+Phrase: 'winter wear'
+  D008  [Jacket]  Women's Casual Puffer Jacket - Olive  positions=[21, 22]
+  D010  [Sweatshirt]  Women's Fleece Sweatshirt - Black  positions=[18, 19]
+  D018  [Jacket]  Women's Quilted Winter Jacket - Beige  positions=[20, 21]
+  D020  [Sweatshirt]  Men's Regular Fit Sweatshirt - Navy Blue  positions=[22, 23]
+  D028  [Jacket]  Women's Casual Puffer Jacket - Black  positions=[21, 22]
+  D030  [Sweatshirt]  Women's Fleece Sweatshirt - Maroon  positions=[18, 19]
+  D038  [Jacket]  Women's Quilted Winter Jacket - Olive  positions=[20, 21]
+  D040  [Sweatshirt]  Men's Regular Fit Sweatshirt - Black  positions=[20, 21]
+  D048  [Jacket]  Women's Casual Puffer Jacket - Beige  positions=[21, 22]
+  D050  [Sweatshirt]  Women's Fleece Sweatshirt - Navy Blue  positions=[20, 21]
+
+Phrase: 'regular fit'
+  D003  [Jeans]  Men's Regular Fit Denim Jeans - Grey  positions=[1, 2]
+  D004  [Kurta]  Men's Regular Fit Kurta - Pink  positions=[1, 2]
+  D020  [Sweatshirt]  Men's Regular Fit Sweatshirt - Navy Blue  positions=[1, 2]
+  D023  [Jeans]  Men's Regular Fit Denim Jeans - Grey  positions=[1, 2]
+  D024  [Kurta]  Men's Regular Fit Kurta - Teal  positions=[1, 2]
+  D040  [Sweatshirt]  Men's Regular Fit Sweatshirt - Black  positions=[1, 2]
+  D043  [Jeans]  Men's Regular Fit Denim Jeans - Grey  positions=[1, 2]
+  D044  [Kurta]  Men's Regular Fit Kurta - Navy Blue  positions=[1, 2]
+  D060  [Sweatshirt]  Men's Regular Fit Sweatshirt - Maroon  positions=[1, 2]
+  D063  [Jeans]  Men's Regular Fit Denim Jeans - Grey  positions=[1, 2]
+
+Phrase: 'breathable fabric'
+  D001  [T-Shirt]  Men's Cotton Crew Neck T-Shirt - Black  positions=[22, 23]
+  D004  [Kurta]  Men's Regular Fit Kurta - Pink  positions=[20, 21]
+  D011  [T-Shirt]  Men's Oversized Graphic T-Shirt - Mustard  positions=[20, 21]
+  D014  [Kurta]  Women's Printed Straight Kurta - Beige  positions=[20, 21]
+  D021  [T-Shirt]  Men's Cotton Crew Neck T-Shirt - Sky Blue  positions=[24, 25]
+  D024  [Kurta]  Men's Regular Fit Kurta - Teal  positions=[20, 21]
+  D031  [T-Shirt]  Men's Oversized Graphic T-Shirt - Olive Green  positions=[22, 23]
+  D034  [Kurta]  Women's Printed Straight Kurta - Maroon  positions=[20, 21]
+  D041  [T-Shirt]  Men's Cotton Crew Neck T-Shirt - Maroon  positions=[22, 23]
+  D044  [Kurta]  Men's Regular Fit Kurta - Navy Blue  positions=[22, 23]
+
+Phrase: 'zip closure'
+  No exact phrase matches.
+
+Phrase: 'high waist'
+  D009  [Leggings]  Women's High Waist Stretch Leggings - Olive Green  positions=[1, 2]
+  D019  [Leggings]  Women's Printed Active Leggings - Black  positions=[22, 23]
+  D029  [Leggings]  Women's High Waist Stretch Leggings - Grey  positions=[1, 2]
+  D039  [Leggings]  Women's Printed Active Leggings - Olive Green  positions=[24, 25]
+  D049  [Leggings]  Women's High Waist Stretch Leggings - Black  positions=[1, 2]
+  D059  [Leggings]  Women's Printed Active Leggings - Grey  positions=[22, 23]
+  D069  [Leggings]  Women's High Waist Stretch Leggings - Olive Green  positions=[1, 2]
+  D079  [Leggings]  Women's Printed Active Leggings - Black  positions=[22, 23]
+  D089  [Leggings]  Women's High Waist Stretch Leggings - Grey  positions=[1, 2]
+  D099  [Leggings]  Women's Printed Active Leggings - Olive Green  positions=[24, 25]
+
+
+### 3. PROXIMITY QUERIES (WITHIN/k, positional index) ###
+
+Query: 'cotton WITHIN/3 shirt'
+  D001  [T-Shirt]  Men's Cotton Crew Neck T-Shirt - Black  matches(pos1,pos2,dist)=[(1, 4, 3), (8, 6, 2), (8, 11, 3)]
+  D002  [Shirt]  Men's Checked Cotton Shirt - Black  matches(pos1,pos2,dist)=[(2, 3, 1), (2, 5, 3), (8, 5, 3)]
+  D011  [T-Shirt]  Men's Oversized Graphic T-Shirt - Mustard  matches(pos1,pos2,dist)=[(12, 9, 3), (12, 14, 2)]
+  D021  [T-Shirt]  Men's Cotton Crew Neck T-Shirt - Sky Blue  matches(pos1,pos2,dist)=[(1, 4, 3), (9, 7, 2), (9, 12, 3)]
+  D022  [Shirt]  Men's Checked Cotton Shirt - White  matches(pos1,pos2,dist)=[(2, 3, 1), (2, 5, 3), (8, 5, 3)]
+  D031  [T-Shirt]  Men's Oversized Graphic T-Shirt - Olive Green  matches(pos1,pos2,dist)=[(14, 16, 2)]
+  D041  [T-Shirt]  Men's Cotton Crew Neck T-Shirt - Maroon  matches(pos1,pos2,dist)=[(1, 4, 3), (8, 6, 2), (8, 11, 3)]
+  D042  [Shirt]  Men's Checked Cotton Shirt - Maroon  matches(pos1,pos2,dist)=[(2, 3, 1), (2, 5, 3), (8, 5, 3)]
+  D051  [T-Shirt]  Men's Oversized Graphic T-Shirt - Navy Blue  matches(pos1,pos2,dist)=[(14, 16, 2)]
+  D061  [T-Shirt]  Men's Cotton Crew Neck T-Shirt - White  matches(pos1,pos2,dist)=[(1, 4, 3), (8, 6, 2), (8, 11, 3)]
+
+Query: 'stretch WITHIN/4 denim'
+  D003  [Jeans]  Men's Regular Fit Denim Jeans - Grey  matches(pos1,pos2,dist)=[(15, 16, 1)]
+  D013  [Jeans]  Men's Slim Fit Stretch Jeans - Grey  matches(pos1,pos2,dist)=[(14, 15, 1)]
+  D033  [Jeans]  Men's Slim Fit Stretch Jeans - Grey  matches(pos1,pos2,dist)=[(15, 16, 1)]
+  D043  [Jeans]  Men's Regular Fit Denim Jeans - Grey  matches(pos1,pos2,dist)=[(14, 10, 4), (14, 15, 1)]
+  D063  [Jeans]  Men's Regular Fit Denim Jeans - Grey  matches(pos1,pos2,dist)=[(15, 16, 1)]
+  D073  [Jeans]  Men's Slim Fit Stretch Jeans - Grey  matches(pos1,pos2,dist)=[(14, 15, 1)]
+  D093  [Jeans]  Men's Slim Fit Stretch Jeans - Grey  matches(pos1,pos2,dist)=[(15, 16, 1)]
+
+Query: 'winter WITHIN/3 wear'
+  D008  [Jacket]  Women's Casual Puffer Jacket - Olive  matches(pos1,pos2,dist)=[(21, 18, 3), (21, 22, 1)]
+  D010  [Sweatshirt]  Women's Fleece Sweatshirt - Black  matches(pos1,pos2,dist)=[(18, 16, 2), (18, 19, 1)]
+  D018  [Jacket]  Women's Quilted Winter Jacket - Beige  matches(pos1,pos2,dist)=[(20, 17, 3), (20, 21, 1)]
+  D020  [Sweatshirt]  Men's Regular Fit Sweatshirt - Navy Blue  matches(pos1,pos2,dist)=[(22, 20, 2), (22, 23, 1)]
+  D028  [Jacket]  Women's Casual Puffer Jacket - Black  matches(pos1,pos2,dist)=[(21, 18, 3), (21, 22, 1)]
+  D030  [Sweatshirt]  Women's Fleece Sweatshirt - Maroon  matches(pos1,pos2,dist)=[(18, 16, 2), (18, 19, 1)]
+  D038  [Jacket]  Women's Quilted Winter Jacket - Olive  matches(pos1,pos2,dist)=[(20, 17, 3), (20, 21, 1)]
+  D040  [Sweatshirt]  Men's Regular Fit Sweatshirt - Black  matches(pos1,pos2,dist)=[(20, 18, 2), (20, 21, 1)]
+  D048  [Jacket]  Women's Casual Puffer Jacket - Beige  matches(pos1,pos2,dist)=[(21, 18, 3), (21, 22, 1)]
+  D050  [Sweatshirt]  Women's Fleece Sweatshirt - Navy Blue  matches(pos1,pos2,dist)=[(20, 18, 2), (20, 21, 1)]
+
+Query: 'festive WITHIN/4 kurta'
+  No matches within k.
+
+
+### 4. CASES WHERE POSITIONAL INFORMATION CHANGES THE RESULT ###
+
+Case 1: Query 'zip closure'
+  Free-text VSM top result(s): ['D052', 'D022', 'D082', 'D012', 'D072']
+  Exact phrase result(s):      []
+  Explanation: The corpus contains 'zip fly' (Jeans) and 'button
+  closure' (Shirts) but never the exact bigram 'zip closure'.
+  Ordinary VSM still ranks jeans/shirts highly because 'zip' and
+  'closure' both appear SOMEWHERE in those documents (bag-of-words
+  co-occurrence is enough). The positional/phrase search correctly
+  returns ZERO documents, because it requires the two terms to be
+  adjacent in that exact order -- proving positional info is doing
+  real work beyond plain term co-occurrence.
+
+Case 2: Query 'cotton shirt'
+  Free-text VSM top-5:  ['D001', 'D041', 'D061', 'D022', 'D082']
+  Exact phrase matches: ['D001', 'D002', 'D021', 'D022', 'D041', 'D042', 'D061', 'D062', 'D081', 'D082']
+  Proximity (k=3) matches: ['D001', 'D002', 'D011', 'D021', 'D022', 'D031', 'D041', 'D042', 'D051', 'D061', 'D062', 'D071', 'D081', 'D082', 'D091']
+  Explanation: VSM ranks ALL documents mentioning both 'cotton' and
+  'shirt' anywhere in the text (e.g. T-shirts where 'cotton' appears
+  in one sentence and 'shirt' several words later), so its result
+  set is larger and ordered purely by tf-idf weight, not adjacency.
+  The exact-phrase search is strictly more precise: it only returns
+  documents where 'cotton' is immediately followed by 'shirt', which
+  removes false positives that only share vocabulary, not meaning.
+  The proximity search (k=3) sits in between: it recovers documents
+  where the two words are close together but not strictly adjacent,
+  giving a superset of the phrase results and a subset of the VSM
+   'anywhere in doc' results -- demonstrating the three techniques
+  trade off precision vs recall differently.
