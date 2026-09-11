@@ -20,7 +20,6 @@
     min-height: 100%;
   }
 
-  /* Fixed full-viewport 3D canvas sitting behind everything */
   #bg-canvas {
     position: fixed;
     top: 0; left: 0;
@@ -35,9 +34,8 @@
     padding: 0 20px 80px;
   }
 
-  /* Hero section gives the page scroll room so the bg animation reads */
   .hero {
-    min-height: 78vh;
+    min-height: 60vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -58,18 +56,7 @@
     max-width: 520px;
     margin: 0 auto;
   }
-  .scroll-hint {
-    margin-top: 50px;
-    color: #6b7280;
-    font-size: 13px;
-    animation: bob 2s ease-in-out infinite;
-  }
-  @keyframes bob {
-    0%, 100% { transform: translateY(0); opacity: .6; }
-    50% { transform: translateY(8px); opacity: 1; }
-  }
 
-  /* Glassmorphism cards */
   .box {
     background: var(--glass);
     border: 1px solid var(--glass-border);
@@ -79,6 +66,7 @@
     padding: 26px;
     margin-bottom: 24px;
     box-shadow: 0 8px 32px rgba(0,0,0,0.35);
+    position: relative;
   }
 
   h3 { margin-top: 0; color: #cbd5f5; font-weight: 600; }
@@ -142,16 +130,58 @@
   td { color: #e5e7f0; }
   .score { font-family: monospace; color: var(--accent); }
   .pos { font-family: monospace; color: #f0b168; font-size: 12px; }
-  .warn { color: #ff8b8b; margin-top: 10px; }
   .hint { color: #7a8199; font-size: 12px; margin-top: 4px; }
+
+  .warn-inline { color: #ff8b8b; margin-top: 10px; }
+
+  #proximity-error-toast {
+    position: fixed;
+    left: 50%;
+    bottom: 40px;
+    transform: translate(-50%, 60px);
+    background: rgba(255, 139, 139, 0.16);
+    border: 1px solid rgba(255, 139, 139, 0.4);
+    color: #ffd7d7;
+    padding: 14px 22px;
+    border-radius: 999px;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+    font-size: 14px;
+    z-index: 50;
+    opacity: 0;
+    pointer-events: none;
+    animation: cloudRise 6.2s ease-in-out forwards;
+  }
+  @keyframes cloudRise {
+    0%   { transform: translate(-50%, 60px);  opacity: 0;   filter: blur(6px); }
+    8%   { transform: translate(-50%, 0);     opacity: 1;   filter: blur(0px); }
+    85%  { transform: translate(-50%, 0);     opacity: 1;   filter: blur(0px); }
+    100% { transform: translate(-50%, -70px); opacity: 0;   filter: blur(8px); }
+  }
 </style>
 <script>
+  function hideProximityError() {
+    var el = document.getElementById('proximity-error-toast');
+    if (el) { el.style.animation = 'none'; el.style.opacity = '0'; el.style.display = 'none'; }
+  }
+
   function showFields() {
     var mode = document.querySelector('input[name="mode"]:checked').value;
     document.getElementById('fields-freetext').style.display = (mode === 'freetext') ? 'block' : 'none';
     document.getElementById('fields-phrase').style.display = (mode === 'phrase') ? 'block' : 'none';
     document.getElementById('fields-proximity').style.display = (mode === 'proximity') ? 'block' : 'none';
+    if (mode !== 'proximity') hideProximityError();
   }
+
+  window.addEventListener('DOMContentLoaded', function () {
+    var toast = document.getElementById('proximity-error-toast');
+    if (toast) {
+      toast.addEventListener('animationend', function () {
+        toast.style.display = 'none';
+      });
+    }
+  });
 </script>
 </head>
 <body onload="showFields()">
@@ -164,7 +194,6 @@
     <h1>Clothing Search Engine</h1>
     <p>A 100-document Vector Space Model + positional-index search system —
        free-text ranking, exact phrase matching, and proximity search.</p>
-    <div class="scroll-hint">scroll ↓</div>
   </div>
 
   <div class="box">
@@ -203,10 +232,8 @@
     </form>
   </div>
 
-  {% if error %}
-  <div class="box">
-    <div class="warn">{{ error }}</div>
-  </div>
+  {% if error and mode == 'proximity' %}
+  <div id="proximity-error-toast">{{ error }}</div>
   {% endif %}
 
   {% if results is not none %}
@@ -214,7 +241,7 @@
     <h3>{{ query_type_label }}</h3>
 
     {% if oov_terms %}
-      <div class="warn">Note: term(s) not found in corpus vocabulary (ignored): {{ oov_terms|join(', ') }}</div>
+      <div class="warn-inline">Note: term(s) not found in corpus vocabulary (ignored): {{ oov_terms|join(', ') }}</div>
     {% endif %}
 
     {% if results|length == 0 %}
@@ -255,57 +282,84 @@
   renderer.setSize(window.innerWidth, window.innerHeight);
 
   var scene = new THREE.Scene();
-  var camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 100);
-  camera.position.z = 14;
+  var camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, 0.1, 100);
+  camera.position.z = 17;
 
-  scene.add(new THREE.AmbientLight(0x404060, 1.2));
-  var dirLight = new THREE.DirectionalLight(0x7dd3fc, 1.1);
-  dirLight.position.set(5, 8, 6);
-  scene.add(dirLight);
-  var dirLight2 = new THREE.DirectionalLight(0xa78bfa, 0.7);
-  dirLight2.position.set(-6, -4, 3);
-  scene.add(dirLight2);
+  scene.add(new THREE.AmbientLight(0x8892b0, 1.0));
+  var rim = new THREE.DirectionalLight(0x7dd3fc, 0.6);
+  rim.position.set(4, 6, 8);
+  scene.add(rim);
 
-  var shapes = [];
-  var geometries = [
-    new THREE.TorusGeometry(1.6, 0.5, 16, 60),
-    new THREE.IcosahedronGeometry(1.6, 0),
-    new THREE.OctahedronGeometry(1.7, 0),
-    new THREE.TorusKnotGeometry(1.1, 0.35, 100, 16),
-  ];
-  var palette = [0x7dd3fc, 0xa78bfa, 0xf0b168, 0x6ee7b7];
+  function makeShapeMesh(points, fillOpacity) {
+    var shape = new THREE.Shape();
+    shape.moveTo(points[0][0], points[0][1]);
+    for (var i = 1; i < points.length; i++) shape.lineTo(points[i][0], points[i][1]);
+    shape.lineTo(points[0][0], points[0][1]);
 
-  var COUNT = 14;
-  for (var i = 0; i < COUNT; i++) {
-    var geo = geometries[i % geometries.length];
+    var geo = new THREE.ExtrudeGeometry(shape, { depth: 0.55, bevelEnabled: false });
     var mat = new THREE.MeshStandardMaterial({
-      color: palette[i % palette.length],
-      roughness: 0.35,
-      metalness: 0.25,
+      color: 0xdfe8ff,
       transparent: true,
-      opacity: 0.35,
-      flatShading: true,
+      opacity: fillOpacity,
+      roughness: 0.5,
+      metalness: 0.05,
+      side: THREE.DoubleSide,
+      depthWrite: false,
     });
     var mesh = new THREE.Mesh(geo, mat);
-    mesh.position.set(
-      (Math.random() - 0.5) * 26,
-      (Math.random() - 0.5) * 60,
-      (Math.random() - 0.5) * 14 - 6
-    );
-    mesh.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, 0);
-    var scale = 0.6 + Math.random() * 1.1;
-    mesh.scale.setScalar(scale);
-    mesh.userData.spin = {
-      x: (Math.random() - 0.5) * 0.004,
-      y: (Math.random() - 0.5) * 0.006,
-    };
-    scene.add(mesh);
-    shapes.push(mesh);
+
+    var edges = new THREE.EdgesGeometry(geo, 25);
+    var lineMat = new THREE.LineBasicMaterial({ color: 0x9fd8ff, transparent: true, opacity: 0.28 });
+    var lines = new THREE.LineSegments(edges, lineMat);
+    mesh.add(lines);
+
+    return mesh;
   }
 
-  var scrollY = 0, targetScrollY = 0;
+  var shirtGroup = new THREE.Group();
+
+  var bodyPts = [
+    [-1.1, 3.3], [-2.3, 2.6], [-2.6, -1.3], [-2.6, -5.5],
+    [2.6, -5.5], [2.6, -1.3], [2.3, 2.6], [1.1, 3.3],
+    [0.6, 2.7], [0.0, 2.4], [-0.6, 2.7],
+  ];
+  var bodyMesh = makeShapeMesh(bodyPts, 0.07);
+  shirtGroup.add(bodyMesh);
+
+  function makeSleeve(sign) {
+    var worldPts = [
+      [-2.3, 2.6], [-5.0, 1.4], [-5.0, -0.4], [-3.4, -0.8], [-2.6, -1.3],
+    ].map(function (p) { return [p[0] * sign, p[1]]; });
+
+    var pivot = [-2.35 * sign, 1.9];
+    var localPts = worldPts.map(function (p) { return [p[0] - pivot[0], p[1] - pivot[1]]; });
+
+    var sleeveMesh = makeShapeMesh(localPts, 0.07);
+    var hinge = new THREE.Group();
+    hinge.position.set(pivot[0], pivot[1], 0);
+    hinge.add(sleeveMesh);
+    return hinge;
+  }
+
+  var leftSleeve = makeSleeve(-1);
+  var rightSleeve = makeSleeve(1);
+  shirtGroup.add(leftSleeve);
+  shirtGroup.add(rightSleeve);
+
+  shirtGroup.position.y = 1.1;
+  scene.add(shirtGroup);
+
+  var spinDir = Math.random() < 0.5 ? 1 : -1;
+
+  var currentScrollY = window.scrollY || 0;
+  var targetRotation = 0;
+  var idleAngle = 0;
+
   function onScroll() {
-    targetScrollY = window.scrollY || document.documentElement.scrollTop || 0;
+    var y = window.scrollY || document.documentElement.scrollTop || 0;
+    var delta = y - currentScrollY;
+    currentScrollY = y;
+    targetRotation += delta * 0.006 * spinDir;
   }
   window.addEventListener('scroll', onScroll, { passive: true });
 
@@ -317,23 +371,25 @@
   window.addEventListener('resize', onResize);
 
   var clock = new THREE.Clock();
+  var smoothedRotation = 0;
 
   function animate() {
     requestAnimationFrame(animate);
     var dt = clock.getDelta();
+    var t = clock.elapsedTime;
 
-    scrollY += (targetScrollY - scrollY) * 0.08;
+    idleAngle += dt * 0.06 * spinDir;
+    smoothedRotation += (targetRotation - smoothedRotation) * 0.05;
+    shirtGroup.rotation.y = idleAngle + smoothedRotation;
+    shirtGroup.rotation.x = Math.sin(t * 0.15) * 0.05;
 
-    var scrollFactor = scrollY * 0.02;
-    scene.position.y = scrollFactor;
-    camera.position.z = 14 - Math.min(scrollY * 0.004, 4);
-    camera.position.x = Math.sin(scrollY * 0.001) * 1.5;
+    leftSleeve.rotation.z =
+      Math.sin(t * 1.1) * 0.18 + Math.sin(t * 2.7 + 1.3) * 0.06;
+    leftSleeve.rotation.x = Math.sin(t * 0.9 + 0.4) * 0.05;
 
-    shapes.forEach(function (mesh, idx) {
-      mesh.rotation.x += mesh.userData.spin.x + dt * 0.05;
-      mesh.rotation.y += mesh.userData.spin.y + dt * 0.08;
-      mesh.position.x += Math.sin(clock.elapsedTime * 0.3 + idx) * 0.0025;
-    });
+    rightSleeve.rotation.z =
+      -(Math.sin(t * 1.05 + 0.7) * 0.18 + Math.sin(t * 2.5 + 2.1) * 0.06);
+    rightSleeve.rotation.x = Math.sin(t * 0.85 + 1.7) * 0.05;
 
     renderer.render(scene, camera);
   }
