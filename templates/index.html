@@ -71,6 +71,12 @@
   </form>
 </div>
 
+{% if error %}
+<div class="box">
+  <div class="warn">{{ error }}</div>
+</div>
+{% endif %}
+
 {% if results is not none %}
 <div class="box">
   <h3>{{ query_type_label }}</h3>

@@ -57,14 +57,17 @@ def home():
 
         elif mode == "proximity":
             query_type_label = "Proximity search (positional index)"
-            parsed = pos_searcher.parse_proximity_query(f"{query} WITHIN/{proximity_k} __dummy__")
-            # query field holds only term1 in proximity mode; term2 is separate field
-            term2 = request.form.get("term2", "")
-            matches, oov_terms = pos_searcher.proximity_search(query, term2, int(proximity_k))
-            results = [
-                {"docid": d, "score": None, "title": t, "category": c,
-                 "positions": m[:3]} for d, t, c, m in matches
-            ]
+            term2 = request.form.get("term2", "").strip()
+            if not term2:
+                error = "Please enter a second term for the proximity search."
+            elif not proximity_k.strip().isdigit():
+                error = f"'k' must be a positive whole number (got {proximity_k!r})."
+            else:
+                matches, oov_terms = pos_searcher.proximity_search(query, term2, int(proximity_k))
+                results = [
+                    {"docid": d, "score": None, "title": t, "category": c,
+                     "positions": m[:3]} for d, t, c, m in matches
+                ]
 
     return render_template(
         "index.html",
