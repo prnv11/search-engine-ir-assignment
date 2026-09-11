@@ -2,25 +2,148 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Clothing Search Engine</title>
 <style>
-  body { font-family: Arial, Helvetica, sans-serif; max-width: 800px; margin: 30px auto; background:#f7f7f9; color:#222; }
-  h1 { font-size: 22px; }
-  .box { background:#fff; border:1px solid #ddd; border-radius:8px; padding:20px; margin-bottom:20px; }
-  .tabs button { padding:8px 16px; border:1px solid #999; background:#eee; cursor:pointer; border-radius:6px; margin-right:6px; }
-  .tabs button.active { background:#2b6cb0; color:#fff; border-color:#2b6cb0; }
-  input[type=text], input[type=number] { padding:8px; width:250px; border:1px solid #bbb; border-radius:5px; }
-  input[type=submit] { padding:8px 16px; border:none; background:#2b6cb0; color:#fff; border-radius:5px; cursor:pointer; }
-  table { width:100%; border-collapse: collapse; margin-top:15px; }
-  th, td { border-bottom:1px solid #e2e2e2; padding:8px; text-align:left; font-size:14px; }
-  th { background:#f0f0f0; }
-  .score { font-family: monospace; color:#2b6cb0; }
-  .pos { font-family: monospace; color:#a0522d; font-size:12px; }
-  .warn { color:#b00020; margin-top:10px; }
-  .hint { color:#666; font-size:12px; }
-  .tabs label { padding:8px 16px; border:1px solid #999; background:#eee; cursor:pointer; border-radius:6px; margin-right:6px; display:inline-block; }
+  :root {
+    --accent: #7dd3fc;
+    --accent2: #a78bfa;
+    --glass: rgba(255,255,255,0.06);
+    --glass-border: rgba(255,255,255,0.14);
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    background: #0b0e17;
+    color: #eef0f5;
+    font-family: 'Segoe UI', Arial, Helvetica, sans-serif;
+    min-height: 100%;
+  }
+
+  /* Fixed full-viewport 3D canvas sitting behind everything */
+  #bg-canvas {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    z-index: -1;
+    display: block;
+  }
+
+  .page {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0 20px 80px;
+  }
+
+  /* Hero section gives the page scroll room so the bg animation reads */
+  .hero {
+    min-height: 78vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+  }
+  .hero h1 {
+    font-size: clamp(32px, 6vw, 56px);
+    margin: 0 0 12px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    letter-spacing: -1px;
+  }
+  .hero p {
+    color: #a8b0c4;
+    font-size: 16px;
+    max-width: 520px;
+    margin: 0 auto;
+  }
+  .scroll-hint {
+    margin-top: 50px;
+    color: #6b7280;
+    font-size: 13px;
+    animation: bob 2s ease-in-out infinite;
+  }
+  @keyframes bob {
+    0%, 100% { transform: translateY(0); opacity: .6; }
+    50% { transform: translateY(8px); opacity: 1; }
+  }
+
+  /* Glassmorphism cards */
+  .box {
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-radius: 16px;
+    padding: 26px;
+    margin-bottom: 24px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.35);
+  }
+
+  h3 { margin-top: 0; color: #cbd5f5; font-weight: 600; }
+
+  .tabs label {
+    padding: 9px 18px;
+    border: 1px solid var(--glass-border);
+    background: rgba(255,255,255,0.04);
+    color: #cfd3e6;
+    cursor: pointer;
+    border-radius: 999px;
+    margin-right: 8px;
+    display: inline-block;
+    font-size: 14px;
+    transition: all .2s ease;
+  }
   .tabs input[type=radio] { display:none; }
-  .tabs input[type=radio]:checked + label { background:#2b6cb0; color:#fff; border-color:#2b6cb0; }
+  .tabs input[type=radio]:checked + label {
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    color: #0b0e17;
+    border-color: transparent;
+    font-weight: 600;
+  }
+
+  label { color: #c7cce0; font-size: 14px; }
+
+  input[type=text], input[type=number] {
+    padding: 10px 12px;
+    width: 260px;
+    max-width: 100%;
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    background: rgba(255,255,255,0.05);
+    color: #fff;
+    margin-top: 6px;
+    font-size: 14px;
+  }
+  input[type=text]::placeholder, input[type=number]::placeholder { color: #6b7280; }
+  input[type=text]:focus, input[type=number]:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(125,211,252,0.15);
+  }
+
+  input[type=submit] {
+    padding: 10px 22px;
+    border: none;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    color: #0b0e17;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 14px;
+    transition: transform .15s ease;
+  }
+  input[type=submit]:hover { transform: translateY(-1px); }
+
+  table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+  th, td { border-bottom: 1px solid rgba(255,255,255,0.08); padding: 10px 8px; text-align: left; font-size: 14px; }
+  th { color: #9aa3bd; font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: .04em; }
+  td { color: #e5e7f0; }
+  .score { font-family: monospace; color: var(--accent); }
+  .pos { font-family: monospace; color: #f0b168; font-size: 12px; }
+  .warn { color: #ff8b8b; margin-top: 10px; }
+  .hint { color: #7a8199; font-size: 12px; margin-top: 4px; }
 </style>
 <script>
   function showFields() {
@@ -33,84 +156,190 @@
 </head>
 <body onload="showFields()">
 
-<h1>👕 Clothing Search Engine (100-doc corpus)</h1>
+<canvas id="bg-canvas"></canvas>
 
-<div class="box">
-  <form method="POST">
-    <div class="tabs">
-      <input type="radio" id="tab-freetext" name="mode" value="freetext" onclick="showFields()" {{ 'checked' if mode!='phrase' and mode!='proximity' }}>
-      <label for="tab-freetext">Free-text (VSM)</label>
+<div class="page">
 
-      <input type="radio" id="tab-phrase" name="mode" value="phrase" onclick="showFields()" {{ 'checked' if mode=='phrase' }}>
-      <label for="tab-phrase">Exact Phrase</label>
+  <div class="hero">
+    <h1>Clothing Search Engine</h1>
+    <p>A 100-document Vector Space Model + positional-index search system —
+       free-text ranking, exact phrase matching, and proximity search.</p>
+    <div class="scroll-hint">scroll ↓</div>
+  </div>
 
-      <input type="radio" id="tab-proximity" name="mode" value="proximity" onclick="showFields()" {{ 'checked' if mode=='proximity' }}>
-      <label for="tab-proximity">Proximity</label>
-    </div>
-    <br>
+  <div class="box">
+    <form method="POST">
+      <div class="tabs">
+        <input type="radio" id="tab-freetext" name="mode" value="freetext" onclick="showFields()" {{ 'checked' if mode!='phrase' and mode!='proximity' }}>
+        <label for="tab-freetext">Free-text (VSM)</label>
 
-    <div id="fields-freetext">
-      <label>Query: <input type="text" name="query" value="{{ query if mode!='phrase' and mode!='proximity' else '' }}" placeholder="e.g. festive cotton kurta"></label><br><br>
-      <div class="hint">Free-text ranked search using lnc.ltc cosine similarity</div>
-    </div>
+        <input type="radio" id="tab-phrase" name="mode" value="phrase" onclick="showFields()" {{ 'checked' if mode=='phrase' }}>
+        <label for="tab-phrase">Exact Phrase</label>
 
-    <div id="fields-phrase" style="display:none;">
-      <label>Phrase: <input type="text" name="phrase_query" value="{{ query if mode=='phrase' else '' }}" placeholder="cotton shirt"></label><br><br>
-      <div class="hint">Enter the exact phrase, e.g. "stretch denim"</div>
-    </div>
+        <input type="radio" id="tab-proximity" name="mode" value="proximity" onclick="showFields()" {{ 'checked' if mode=='proximity' }}>
+        <label for="tab-proximity">Proximity</label>
+      </div>
+      <br>
 
-    <div id="fields-proximity" style="display:none;">
-      <label>Term 1: <input type="text" name="prox_term1" value="{{ query if mode=='proximity' else '' }}" placeholder="cotton"></label><br><br>
-      <label>Term 2: <input type="text" name="term2" value="{{ term2 }}" placeholder="shirt"></label><br><br>
-      <label>Within k positions: <input type="number" name="k" value="{{ proximity_k }}" min="1"></label><br><br>
-      <div class="hint">Example: cotton WITHIN/3 shirt</div>
-    </div>
+      <div id="fields-freetext">
+        <label>Query:<br><input type="text" name="query" value="{{ query if mode!='phrase' and mode!='proximity' else '' }}" placeholder="e.g. festive cotton kurta"></label><br><br>
+        <div class="hint">Free-text ranked search using lnc.ltc cosine similarity</div>
+      </div>
 
-    <br>
-    <input type="submit" value="Search">
-  </form>
-</div>
+      <div id="fields-phrase" style="display:none;">
+        <label>Phrase:<br><input type="text" name="phrase_query" value="{{ query if mode=='phrase' else '' }}" placeholder="cotton shirt"></label><br><br>
+        <div class="hint">Enter the exact phrase, e.g. "stretch denim"</div>
+      </div>
 
-{% if error %}
-<div class="box">
-  <div class="warn">{{ error }}</div>
-</div>
-{% endif %}
+      <div id="fields-proximity" style="display:none;">
+        <label>Term 1:<br><input type="text" name="prox_term1" value="{{ query if mode=='proximity' else '' }}" placeholder="cotton"></label><br><br>
+        <label>Term 2:<br><input type="text" name="term2" value="{{ term2 }}" placeholder="shirt"></label><br><br>
+        <label>Within k positions:<br><input type="number" name="k" value="{{ proximity_k }}" min="1"></label><br><br>
+        <div class="hint">Example: cotton WITHIN/3 shirt</div>
+      </div>
 
-{% if results is not none %}
-<div class="box">
-  <h3>{{ query_type_label }}</h3>
+      <br>
+      <input type="submit" value="Search">
+    </form>
+  </div>
 
-  {% if oov_terms %}
-    <div class="warn">Note: term(s) not found in corpus vocabulary (ignored): {{ oov_terms|join(', ') }}</div>
+  {% if error %}
+  <div class="box">
+    <div class="warn">{{ error }}</div>
+  </div>
   {% endif %}
 
-  {% if results|length == 0 %}
-    <p>No matching documents found.</p>
-  {% else %}
-    <table>
-      <tr>
-        <th>#</th>
-        <th>Doc ID</th>
-        <th>Category</th>
-        <th>Title</th>
-        {% if mode == 'freetext' %}<th>Cosine Score</th>{% endif %}
-        {% if mode != 'freetext' %}<th>Matched Positions</th>{% endif %}
-      </tr>
-      {% for r in results %}
-      <tr>
-        <td>{{ loop.index }}</td>
-        <td>{{ r.docid }}</td>
-        <td>{{ r.category }}</td>
-        <td>{{ r.title }}</td>
-        {% if mode == 'freetext' %}<td class="score">{{ r.score }}</td>{% endif %}
-        {% if mode != 'freetext' %}<td class="pos">{{ r.positions }}</td>{% endif %}
-      </tr>
-      {% endfor %}
-    </table>
+  {% if results is not none %}
+  <div class="box">
+    <h3>{{ query_type_label }}</h3>
+
+    {% if oov_terms %}
+      <div class="warn">Note: term(s) not found in corpus vocabulary (ignored): {{ oov_terms|join(', ') }}</div>
+    {% endif %}
+
+    {% if results|length == 0 %}
+      <p>No matching documents found.</p>
+    {% else %}
+      <table>
+        <tr>
+          <th>#</th>
+          <th>Doc ID</th>
+          <th>Category</th>
+          <th>Title</th>
+          {% if mode == 'freetext' %}<th>Cosine Score</th>{% endif %}
+          {% if mode != 'freetext' %}<th>Matched Positions</th>{% endif %}
+        </tr>
+        {% for r in results %}
+        <tr>
+          <td>{{ loop.index }}</td>
+          <td>{{ r.docid }}</td>
+          <td>{{ r.category }}</td>
+          <td>{{ r.title }}</td>
+          {% if mode == 'freetext' %}<td class="score">{{ r.score }}</td>{% endif %}
+          {% if mode != 'freetext' %}<td class="pos">{{ r.positions }}</td>{% endif %}
+        </tr>
+        {% endfor %}
+      </table>
+    {% endif %}
+  </div>
   {% endif %}
+
 </div>
-{% endif %}
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function () {
+  var canvas = document.getElementById('bg-canvas');
+  var renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setSize(window.innerWidth, window.innerHeight);
+
+  var scene = new THREE.Scene();
+  var camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 100);
+  camera.position.z = 14;
+
+  scene.add(new THREE.AmbientLight(0x404060, 1.2));
+  var dirLight = new THREE.DirectionalLight(0x7dd3fc, 1.1);
+  dirLight.position.set(5, 8, 6);
+  scene.add(dirLight);
+  var dirLight2 = new THREE.DirectionalLight(0xa78bfa, 0.7);
+  dirLight2.position.set(-6, -4, 3);
+  scene.add(dirLight2);
+
+  var shapes = [];
+  var geometries = [
+    new THREE.TorusGeometry(1.6, 0.5, 16, 60),
+    new THREE.IcosahedronGeometry(1.6, 0),
+    new THREE.OctahedronGeometry(1.7, 0),
+    new THREE.TorusKnotGeometry(1.1, 0.35, 100, 16),
+  ];
+  var palette = [0x7dd3fc, 0xa78bfa, 0xf0b168, 0x6ee7b7];
+
+  var COUNT = 14;
+  for (var i = 0; i < COUNT; i++) {
+    var geo = geometries[i % geometries.length];
+    var mat = new THREE.MeshStandardMaterial({
+      color: palette[i % palette.length],
+      roughness: 0.35,
+      metalness: 0.25,
+      transparent: true,
+      opacity: 0.35,
+      flatShading: true,
+    });
+    var mesh = new THREE.Mesh(geo, mat);
+    mesh.position.set(
+      (Math.random() - 0.5) * 26,
+      (Math.random() - 0.5) * 60,
+      (Math.random() - 0.5) * 14 - 6
+    );
+    mesh.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, 0);
+    var scale = 0.6 + Math.random() * 1.1;
+    mesh.scale.setScalar(scale);
+    mesh.userData.spin = {
+      x: (Math.random() - 0.5) * 0.004,
+      y: (Math.random() - 0.5) * 0.006,
+    };
+    scene.add(mesh);
+    shapes.push(mesh);
+  }
+
+  var scrollY = 0, targetScrollY = 0;
+  function onScroll() {
+    targetScrollY = window.scrollY || document.documentElement.scrollTop || 0;
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+
+  function onResize() {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  }
+  window.addEventListener('resize', onResize);
+
+  var clock = new THREE.Clock();
+
+  function animate() {
+    requestAnimationFrame(animate);
+    var dt = clock.getDelta();
+
+    scrollY += (targetScrollY - scrollY) * 0.08;
+
+    var scrollFactor = scrollY * 0.02;
+    scene.position.y = scrollFactor;
+    camera.position.z = 14 - Math.min(scrollY * 0.004, 4);
+    camera.position.x = Math.sin(scrollY * 0.001) * 1.5;
+
+    shapes.forEach(function (mesh, idx) {
+      mesh.rotation.x += mesh.userData.spin.x + dt * 0.05;
+      mesh.rotation.y += mesh.userData.spin.y + dt * 0.08;
+      mesh.position.x += Math.sin(clock.elapsedTime * 0.3 + idx) * 0.0025;
+    });
+
+    renderer.render(scene, camera);
+  }
+  animate();
+})();
+</script>
 
 </body>
 </html>
