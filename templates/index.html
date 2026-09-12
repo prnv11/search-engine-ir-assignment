@@ -83,8 +83,30 @@
       </form>
     </div>
 
-    {% if error and mode == 'proximity' %}
-    <div id="proximity-error-toast">{{ error }}</div>
+    <<<<<<< HEAD {% if error and mode=='proximity' %} <div id="proximity-error-toast">{{ error }}
+  </div>
+  =======
+  <br>
+  <input type="submit" value="Search">
+  </form>
+  </div>
+
+  {% if error and mode == 'proximity' %}
+  <div id="proximity-error-toast">{{ error }}</div>
+  {% endif %}
+
+  {% if results is not none %}
+  <div class="box">
+    <h3>{{ query_type_label }}</h3>
+
+    {% if oov_terms %}
+    <div class="warn-inline">Note: term(s) not found in corpus vocabulary (ignored): {{ oov_terms|join(', ') }}</div>
+    {% for term in oov_terms %}
+    {% if suggestions.get(term) %}
+    <div class="hint">Did you mean <strong>{{ suggestions[term] }}</strong> instead of "{{ term }}"?</div>
+    {% endif %}
+    {% endfor %}
+    >>>>>>> f8c3ae8123d9b507c7b433261f82bc6e2a415c76
     {% endif %}
 
     {% if results is not none %}

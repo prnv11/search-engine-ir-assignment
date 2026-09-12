@@ -14,6 +14,7 @@ import os
 import re
 
 from preprocess import preprocess_query
+from spellcheck import suggest
 
 STORE_PATH = os.path.join(os.path.dirname(__file__), "output", "index_store.json")
 
@@ -28,19 +29,23 @@ class PositionalSearcher:
     def _postings(self, term):
         return self.positional_index.get(term, {})
 
+    def _suggestions_for(self, oov_terms):
+        return {t: suggest(t, self.positional_index.keys()) for t in oov_terms}
+
     def phrase_search(self, phrase_text):
         """
-        Returns (results, oov_terms) where results is a list of
-        (docid, title, category, matched_positions) for docs containing
-        the exact phrase, sorted by increasing docID.
+        Returns (results, oov_terms, suggestions) where results is a list
+        of (docid, title, category, matched_positions) for docs containing
+        the exact phrase, sorted by increasing docID. suggestions maps
+        each OOV term to a "did you mean" candidate (or None).
         """
         terms = preprocess_query(phrase_text)
         if not terms:
-            return [], []
+            return [], [], {}
 
         oov = [t for t in terms if t not in self.positional_index]
         if oov:
-            return [], oov
+            return [], oov, self._suggestions_for(oov)
 
         # Candidate docs = docs containing the first term.
         first_postings = self._postings(terms[0])
@@ -59,13 +64,13 @@ class PositionalSearcher:
                     results.append((docid, self.doc_meta[docid]["title"],
                                      self.doc_meta[docid]["category"], matched))
                     break  # one match per doc is enough evidence
-        return results, []
+        return results, [], {}
 
     def proximity_search(self, term1, term2, k):
         """
         term1 WITHIN/k term2: both terms occur in the same doc with
         |pos1 - pos2| <= k, order-independent.
-        Returns (results, oov_terms); results = list of
+        Returns (results, oov_terms, suggestions); results = list of
         (docid, title, category, [(pos1, pos2, distance), ...]).
         """
         t1_list = preprocess_query(term1)
@@ -75,7 +80,7 @@ class PositionalSearcher:
 
         oov = [t for t in (t1, t2) if t not in self.positional_index]
         if oov:
-            return [], oov
+            return [], oov, self._suggestions_for(oov)
 
         docs1 = self._postings(t1)
         docs2 = self._postings(t2)
@@ -93,7 +98,7 @@ class PositionalSearcher:
             if matches:
                 results.append((docid, self.doc_meta[docid]["title"],
                                  self.doc_meta[docid]["category"], matches))
-        return results, []
+        return results, [], {}
 
     @staticmethod
     def parse_proximity_query(query_str):
@@ -112,11 +117,14 @@ if __name__ == "__main__":
     ps = PositionalSearcher()
 
     print("=== Phrase queries ===")
-    for phrase in ["cotton shirt", "stretch denim", "zip closure", "high waist"]:
-        results, oov = ps.phrase_search(phrase)
+    for phrase in ["cotton shirt", "stretch denim", "zip closure", "high wast"]:
+        results, oov, suggestions = ps.phrase_search(phrase)
         print(f"\nPhrase: {phrase!r}")
         if oov:
             print(f"  out-of-vocabulary: {oov}")
+            for term in oov:
+                if suggestions.get(term):
+                    print(f"    Did you mean {suggestions[term]!r} instead of {term!r}?")
         for docid, title, cat, positions in results[:5]:
             print(f"  {docid}  [{cat}]  {title}   positions={positions}")
         if not results and not oov:
@@ -125,10 +133,13 @@ if __name__ == "__main__":
     print("\n=== Proximity queries ===")
     for q in ["cotton WITHIN/3 shirt", "stretch WITHIN/4 denim", "winter WITHIN/3 wear"]:
         term1, term2, k = ps.parse_proximity_query(q)
-        results, oov = ps.proximity_search(term1, term2, k)
+        results, oov, suggestions = ps.proximity_search(term1, term2, k)
         print(f"\nQuery: {q!r}")
         if oov:
             print(f"  out-of-vocabulary: {oov}")
+            for term in oov:
+                if suggestions.get(term):
+                    print(f"    Did you mean {suggestions[term]!r} instead of {term!r}?")
         for docid, title, cat, matches in results[:5]:
             print(f"  {docid}  [{cat}]  {title}   matches={matches[:3]}")
         if not results and not oov:

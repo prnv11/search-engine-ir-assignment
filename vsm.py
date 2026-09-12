@@ -15,6 +15,7 @@ import os
 from collections import defaultdict
 
 from preprocess import preprocess_query
+from spellcheck import suggest
 
 STORE_PATH = os.path.join(os.path.dirname(__file__), "output", "index_store.json")
 
@@ -44,6 +45,7 @@ class VSMSearcher:
             q_tf[t] += 1
 
         oov_terms = [t for t in q_tf if self.df(t) == 0]
+        suggestions = {t: suggest(t, self.inverted_index.keys()) for t in oov_terms}
 
         # ---- query weights (ltc) ----
         q_weights = {}
@@ -56,7 +58,7 @@ class VSMSearcher:
 
         q_norm = math.sqrt(sum(w * w for w in q_weights.values()))
         if q_norm == 0:
-            return [], oov_terms  # nothing matchable
+            return [], oov_terms, suggestions  # nothing matchable
 
         # ---- accumulate dot products doc-by-doc using postings ----
         scores = defaultdict(float)
@@ -82,15 +84,18 @@ class VSMSearcher:
             (docid, score, self.doc_meta[docid]["title"], self.doc_meta[docid]["category"])
             for docid, score in results
         ]
-        return enriched, oov_terms
+        return enriched, oov_terms, suggestions
 
 
 if __name__ == "__main__":
     searcher = VSMSearcher()
-    for q in ["cotton shirt", "festive kurta", "winter jacket"]:
+    for q in ["cotton shirt", "festive kurta", "winter jaket"]:
         print(f"\nQuery: {q!r}")
-        results, oov = searcher.search(q)
+        results, oov, suggestions = searcher.search(q)
         if oov:
             print(f"  (out-of-vocabulary terms ignored: {oov})")
+            for term in oov:
+                if suggestions.get(term):
+                    print(f"    Did you mean {suggestions[term]!r} instead of {term!r}?")
         for docid, score, title, cat in results:
             print(f"  {docid}  {score:.4f}  [{cat}]  {title}")

@@ -67,13 +67,14 @@ def home():
 
     results = None
     oov_terms = []
+    suggestions = {}
     error = None
     query_type_label = ""
 
     if request.method == "POST" and query.strip():
         if mode == "freetext":
             query_type_label = "Free-text (VSM, lnc.ltc cosine similarity)"
-            ranked, oov_terms = vsm.search(query, top_k=10)
+            ranked, oov_terms, suggestions = vsm.search(query, top_k=10)
             results = [
                 {"docid": d, "score": f"{s:.4f}", "title": t, "category": c, "positions": None}
                 for d, s, t, c in ranked
@@ -81,7 +82,7 @@ def home():
 
         elif mode == "phrase":
             query_type_label = "Exact phrase search (positional index)"
-            matches, oov_terms = pos_searcher.phrase_search(query)
+            matches, oov_terms, suggestions = pos_searcher.phrase_search(query)
             results = [
                 {"docid": d, "score": None, "title": t, "category": c, "positions": pos}
                 for d, t, c, pos in matches
@@ -95,7 +96,7 @@ def home():
             elif not proximity_k.strip().isdigit():
                 error = f"'k' must be a positive whole number (got {proximity_k!r})."
             else:
-                matches, oov_terms = pos_searcher.proximity_search(query, term2, int(proximity_k))
+                matches, oov_terms, suggestions = pos_searcher.proximity_search(query, term2, int(proximity_k))
                 results = [
                     {"docid": d, "score": None, "title": t, "category": c,
                      "positions": m[:3]} for d, t, c, m in matches
@@ -109,6 +110,7 @@ def home():
         term2=request.form.get("term2", ""),
         results=results,
         oov_terms=oov_terms,
+        suggestions=suggestions,
         query_type_label=query_type_label,
         error=error,
     )
