@@ -20,7 +20,12 @@ clothing_search_engine/
 ├── vsm.py                          # lnc.ltc cosine similarity search
 ├── positional_search.py            # phrase and proximity search
 ├── app.py                            # Flask web app
+├── test_queries.py
 ├── test_queries.py                     # test suite -> report
+├── screenshots/
+│   └── 1_freetext_search.jpeg
+│   └── 2_phrase_search.jpeg
+│   └── 3_proximity_search.jpeg
 ├── templates/
 │   └── index.html                        # web UI
 └── output/                                 # generated on first run
