@@ -286,3 +286,29 @@ Case 2: Query 'cotton shirt'
   giving a superset of the phrase results and a subset of the VSM
    'anywhere in doc' results -- demonstrating the three techniques
   trade off precision vs recall differently.
+
+
+### 5. NOVELTY: 'DID YOU MEAN ...?' SPELL SUGGESTIONS ###
+
+Out-of-vocabulary query terms are checked against the corpus
+vocabulary using Levenshtein edit distance (see spellcheck.py).
+If a vocabulary term is within 2 edits, it is suggested back to
+the user -- a small quality-of-life feature on top of the
+mandatory OOV handling in Part E.
+
+Query: 'cotten shirt'
+  [out-of-vocabulary terms ignored: ['cotten']]
+    Did you mean 'cotton' instead of 'cotten'?
+
+Query: 'wintr jaket'
+  [out-of-vocabulary terms ignored: ['wintr', 'jaket']]
+    Did you mean 'winter' instead of 'wintr'?
+    Did you mean 'jacket' instead of 'jaket'?
+
+Query: 'denum jeans'
+  [out-of-vocabulary terms ignored: ['denum']]
+    Did you mean 'denim' instead of 'denum'?
+
+Query: 'kurtaa'
+  [out-of-vocabulary terms ignored: ['kurtaa']]
+    Did you mean 'kurta' instead of 'kurtaa'?

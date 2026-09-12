@@ -61,10 +61,13 @@ def run():
     # ---------- Free-text queries ----------
     lines.append("\n\n### 1. FREE-TEXT QUERIES (VSM, lnc.ltc cosine) ###\n")
     for q in FREETEXT_QUERIES:
-        results, oov = vsm.search(q, top_k=10)
+        results, oov, suggestions = vsm.search(q, top_k=10)
         lines.append(f"Query: {q!r}")
         if oov:
             lines.append(f"  [out-of-vocabulary terms ignored: {oov}]")
+            for term in oov:
+                if suggestions.get(term):
+                    lines.append(f"    Did you mean {suggestions[term]!r} instead of {term!r}?")
         if not results:
             lines.append("  No results.")
         for docid, score, title, cat in results:
@@ -74,10 +77,13 @@ def run():
     # ---------- Phrase queries ----------
     lines.append("\n### 2. EXACT PHRASE QUERIES (positional index) ###\n")
     for q in PHRASE_QUERIES:
-        results, oov = ps.phrase_search(q)
+        results, oov, suggestions = ps.phrase_search(q)
         lines.append(f"Phrase: {q!r}")
         if oov:
             lines.append(f"  [out-of-vocabulary terms: {oov}]")
+            for term in oov:
+                if suggestions.get(term):
+                    lines.append(f"    Did you mean {suggestions[term]!r} instead of {term!r}?")
         if not results:
             lines.append("  No exact phrase matches.")
         for docid, title, cat, pos in results[:10]:
@@ -87,10 +93,13 @@ def run():
     # ---------- Proximity queries ----------
     lines.append("\n### 3. PROXIMITY QUERIES (WITHIN/k, positional index) ###\n")
     for t1, t2, k in PROXIMITY_QUERIES:
-        results, oov = ps.proximity_search(t1, t2, k)
+        results, oov, suggestions = ps.proximity_search(t1, t2, k)
         lines.append(f"Query: '{t1} WITHIN/{k} {t2}'")
         if oov:
             lines.append(f"  [out-of-vocabulary terms: {oov}]")
+            for term in oov:
+                if suggestions.get(term):
+                    lines.append(f"    Did you mean {suggestions[term]!r} instead of {term!r}?")
         if not results:
             lines.append("  No matches within k.")
         for docid, title, cat, matches in results[:10]:
@@ -101,8 +110,8 @@ def run():
     lines.append("\n### 4. CASES WHERE POSITIONAL INFORMATION CHANGES THE RESULT ###\n")
 
     # Case 1: "zip closure" - free text vs phrase
-    ft_results, _ = vsm.search("zip closure", top_k=10)
-    ph_results, _ = ps.phrase_search("zip closure")
+    ft_results, _, _ = vsm.search("zip closure", top_k=10)
+    ph_results, _, _ = ps.phrase_search("zip closure")
     lines.append("Case 1: Query 'zip closure'")
     lines.append(f"  Free-text VSM top result(s): {[r[0] for r in ft_results[:5]]}")
     lines.append(f"  Exact phrase result(s):      {[r[0] for r in ph_results]}")
@@ -116,9 +125,9 @@ def run():
     lines.append("  real work beyond plain term co-occurrence.")
 
     # Case 2: "cotton shirt" phrase vs proximity vs free-text ordering
-    ft2, _ = vsm.search("cotton shirt", top_k=10)
-    ph2, _ = ps.phrase_search("cotton shirt")
-    prox2, _ = ps.proximity_search("cotton", "shirt", 3)
+    ft2, _, _ = vsm.search("cotton shirt", top_k=10)
+    ph2, _, _ = ps.phrase_search("cotton shirt")
+    prox2, _, _ = ps.proximity_search("cotton", "shirt", 3)
     lines.append("\nCase 2: Query 'cotton shirt'")
     lines.append(f"  Free-text VSM top-5:  {[r[0] for r in ft2[:5]]}")
     lines.append(f"  Exact phrase matches: {[r[0] for r in ph2]}")
@@ -135,6 +144,27 @@ def run():
     lines.append("  giving a superset of the phrase results and a subset of the VSM")
     lines.append("   'anywhere in doc' results -- demonstrating the three techniques")
     lines.append("  trade off precision vs recall differently.")
+
+    # ---------- Novelty: "Did you mean ...?" spelling suggestions ----------
+    lines.append("\n\n### 5. NOVELTY: 'DID YOU MEAN ...?' SPELL SUGGESTIONS ###\n")
+    lines.append("Out-of-vocabulary query terms are checked against the corpus")
+    lines.append("vocabulary using Levenshtein edit distance (see spellcheck.py).")
+    lines.append("If a vocabulary term is within 2 edits, it is suggested back to")
+    lines.append("the user -- a small quality-of-life feature on top of the")
+    lines.append("mandatory OOV handling in Part E.\n")
+
+    TYPO_QUERIES = ["cotten shirt", "wintr jaket", "denum jeans", "kurtaa"]
+    for q in TYPO_QUERIES:
+        results, oov, suggestions = vsm.search(q, top_k=10)
+        lines.append(f"Query: {q!r}")
+        if oov:
+            lines.append(f"  [out-of-vocabulary terms ignored: {oov}]")
+            for term in oov:
+                if suggestions.get(term):
+                    lines.append(f"    Did you mean {suggestions[term]!r} instead of {term!r}?")
+                else:
+                    lines.append(f"    No close match found for {term!r}.")
+        lines.append("")
 
     with open(OUT_PATH, "w", encoding="utf-8") as f:
         f.write("\n".join(lines))
