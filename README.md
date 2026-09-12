@@ -28,6 +28,9 @@ clothing_search_engine/
 │   └── 3_proximity_search.jpeg
 ├── templates/
 │   └── index.html                        # web UI
+├── static/
+│   └── style.css
+│   └── autocomplete.js
 └── output/                                 # generated on first run
     ├── dictionary_postings.txt              # inverted index and dictionary
     ├── positional_index.txt                   # positional index

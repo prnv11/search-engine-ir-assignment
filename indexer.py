@@ -23,7 +23,7 @@ import re
 import json
 import os
 from collections import defaultdict
-from preprocess import preprocess
+from preprocess import preprocess, tokenize, STOPWORDS
 
 CORPUS_PATH = os.path.join(os.path.dirname(__file__), "corpus_100.txt")
 OUTPUT_DIR = os.path.join(os.path.dirname(__file__), "output")
@@ -59,12 +59,17 @@ def build_indexes(docs):
       doc_lengths: {docid: L2 norm of (1+log10(tf)) weights}  -- for Part B
       doc_meta: {docid: {"title":..., "category":..., "text":...}}
       N: number of documents
+      word_frequencies: {real_word: total_count} -- UNSTEMMED words (with
+        stopwords still removed), used only to drive autocomplete so
+        suggestions are real dictionary words instead of stemmed roots
+        like "washabl" or "featur".
     """
     import math
 
     inverted_index = defaultdict(lambda: defaultdict(int))
     positional_index = defaultdict(lambda: defaultdict(lambda: [0, []]))
     doc_meta = {}
+    word_frequencies = defaultdict(int)
 
     for doc in docs:
         docid = doc["docid"]
@@ -85,6 +90,10 @@ def build_indexes(docs):
             entry[0] += 1
             entry[1].append(pos)
 
+        for word in tokenize(full_text):
+            if word not in STOPWORDS:
+                word_frequencies[word] += 1
+
     # Document-length norms for Inc.ltc cosine normalization (Part B).
     doc_lengths = {}
     doc_term_weights = defaultdict(dict)  # docid -> {term: wd,t}
@@ -97,7 +106,7 @@ def build_indexes(docs):
         doc_lengths[docid] = math.sqrt(sum(w * w for w in weights.values()))
 
     N = len(docs)
-    return inverted_index, positional_index, doc_lengths, doc_meta, N
+    return inverted_index, positional_index, doc_lengths, doc_meta, N, dict(word_frequencies)
 
 
 def save_dictionary_and_postings(inverted_index, N, path=None):
@@ -128,7 +137,7 @@ def save_positional_index(positional_index, path=None):
     return path
 
 
-def save_json_indexes(inverted_index, positional_index, doc_lengths, doc_meta, N):
+def save_json_indexes(inverted_index, positional_index, doc_lengths, doc_meta, N, word_frequencies):
     """Persist everything as JSON so app.py / vsm.py can load quickly
     without re-parsing the corpus and re-running the stemmer each time."""
     os.makedirs(OUTPUT_DIR, exist_ok=True)
@@ -138,6 +147,7 @@ def save_json_indexes(inverted_index, positional_index, doc_lengths, doc_meta, N
         "positional_index": {t: {d: v for d, v in p.items()} for t, p in positional_index.items()},
         "doc_lengths": doc_lengths,
         "doc_meta": doc_meta,
+        "word_frequencies": word_frequencies,
     }
     path = os.path.join(OUTPUT_DIR, "index_store.json")
     with open(path, "w", encoding="utf-8") as f:
@@ -148,12 +158,12 @@ def save_json_indexes(inverted_index, positional_index, doc_lengths, doc_meta, N
 def main():
     docs = load_corpus()
     print(f"Loaded {len(docs)} documents from {CORPUS_PATH}")
-    inverted_index, positional_index, doc_lengths, doc_meta, N = build_indexes(docs)
+    inverted_index, positional_index, doc_lengths, doc_meta, N, word_frequencies = build_indexes(docs)
     print(f"Vocabulary size (after stopword removal + stemming): {len(inverted_index)}")
 
     p1 = save_dictionary_and_postings(inverted_index, N)
     p2 = save_positional_index(positional_index)
-    p3 = save_json_indexes(inverted_index, positional_index, doc_lengths, doc_meta, N)
+    p3 = save_json_indexes(inverted_index, positional_index, doc_lengths, doc_meta, N, word_frequencies)
 
     print(f"Wrote dictionary/postings -> {p1}")
     print(f"Wrote positional index    -> {p2}")

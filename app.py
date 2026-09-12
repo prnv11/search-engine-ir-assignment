@@ -1,13 +1,17 @@
 """
-Part D - Application
+Application module.
 
 A minimal Flask app with two search modes:
-  1. Free-text ranked search (Vector Space Model, Part B)
-  2. Phrase / Proximity search using the positional index (Part C)
+  1. Free-text ranked search (Vector Space Model)
+  2. Phrase / Proximity search using the positional index
+  3. Autocomplete suggestions as the user types
 
 Run with:  python app.py
 Then open: http://127.0.0.1:5000
 """
+
+import json
+import os
 
 from flask import Flask, render_template, request
 
@@ -17,6 +21,34 @@ from positional_search import PositionalSearcher
 app = Flask(__name__)
 vsm = VSMSearcher()
 pos_searcher = PositionalSearcher()
+
+# --- Autocomplete setup ---
+# Loaded once at startup from the same index_store.json that vsm.py and
+# positional_search.py use internally. Suggestions are drawn from
+# "word_frequencies" -- the UNSTEMMED corpus vocabulary -- rather than the
+# stemmed inverted-index keys, so the dropdown shows real words (e.g.
+# "washable") instead of stemmed roots (e.g. "washabl").
+INDEX_STORE_PATH = os.path.join(os.path.dirname(__file__), "output", "index_store.json")
+
+with open(INDEX_STORE_PATH, "r", encoding="utf-8") as f:
+    _index_data = json.load(f)
+
+# Sorted so more frequent words surface first when multiple words share
+# the same prefix.
+_VOCABULARY = sorted(
+    _index_data["word_frequencies"].keys(),
+    key=lambda word: -_index_data["word_frequencies"][word]
+)
+
+
+@app.route("/autocomplete")
+def autocomplete():
+    prefix = request.args.get("q", "").strip().lower()
+    if not prefix:
+        return {"suggestions": []}
+
+    matches = [term for term in _VOCABULARY if term.startswith(prefix)][:5]
+    return {"suggestions": matches}
 
 
 @app.route("/", methods=["GET", "POST"])
