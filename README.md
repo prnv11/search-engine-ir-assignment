@@ -70,3 +70,9 @@ clothing_search_engine/
 - **Position numbering**: positions are assigned over the processed token stream (after stopword removal + stemming), not the raw text. This keeps position indices consistent with the vocabulary used elsewhere in the pipeline, but means that if a stopword sits between two content words in the original text (e.g. "cotton and shirt"), those words become adjacent after stopword removal and would satisfy a phrase query. This trade-off is discussed in `output/test_report.txt`.
 - **lnc.ltc weighting**: implemented exactly as specified — document side uses log-tf only (no idf), query side uses log-tf × idf, both vectors cosine-normalized before the dot product.
 - **Proximity semantics**: `t1 WITHIN/k t2` matches if any occurrence of `t1` and any occurrence of `t2` in the same document have `|pos1 - pos2| <= k`, in either order.
+
+
+## Project Members
+
+- Anuran Basu (2310110053)
+- Pranav Talwar (2310110555)
